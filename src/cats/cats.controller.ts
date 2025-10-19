@@ -13,12 +13,13 @@ import { UpdateCatsDto } from './dto/update-cats.dto';
 
 @Controller('cats')
 export class CatsController {
+  // nest g service cats
   //Dependency Injection
   constructor(private readonly catsService: CatsService) {}
 
   @Get()
-  findAll(): string[] {
-    return this.catsService.findAll();
+  findAll() {
+    return this.catsService.findAll(); //return array
   }
 
   //@Req Vs @Body
@@ -26,8 +27,8 @@ export class CatsController {
   //@Body: access only the body of the request
 
   @Get('/:id')
-  findOne(@Param('id') id: string): string {
-    return this.catsService.findOne(+id);
+  findOne(@Param('id') id: string) {
+    return this.catsService.findOne(+id); //return object or null
   }
 
   @Post()
@@ -37,15 +38,17 @@ export class CatsController {
   }
 
   @Put('/:id')
-  update(@Param('id') id: string, @Body() updateCatDto: UpdateCatsDto): string {
-    if (!updateCatDto.name) {
-      throw new Error('Name is required');
-    }
-    return this.catsService.update(+id, { name: updateCatDto.name });
+  update(@Param('id') id: string, @Body() updateCatDto: UpdateCatsDto) {
+    // if (!updateCatDto.name) {
+    //   throw new Error('Name is required');
+    // }
+    // { name: updateCatDto.name }
+
+    return this.catsService.update(id, updateCatDto); //return UpdateResult
   }
 
   @Delete('/:id')
-  delete(@Param('id') id: number): string[] {
-    return this.catsService.delete(id);
+  delete(@Param('id') id: number) {
+    return this.catsService.delete(id); //return DeleteResult
   }
 }

@@ -1,25 +1,35 @@
+import { CreateCatsDto } from './dto/create-cats.dto';
 import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { CatsEntity } from './entity/cats.entity';
+import { UpdateCatsDto } from './dto/update-cats.dto';
+import { UpdateResult } from 'typeorm/browser';
+import { DeleteResult } from 'typeorm/browser';
+import { InjectRepository } from '@nestjs/typeorm';
 
 //nest g service cats
 
 @Injectable()
 export class CatsService {
-  private readonly cats: string[] = ['cat1', 'cat2', 'cat3'];
-  findAll(): string[] {
-    return this.cats;
+  // private readonly cats: string[] = ['cat1', 'cat2', 'cat3'];
+  constructor(
+    @InjectRepository(CatsEntity)
+    private readonly catsRepository: Repository<CatsEntity>,
+  ) {}
+
+  findAll(): Promise<CatsEntity[]> {
+    return this.catsRepository.find(); //return array
   }
-  findOne(id: number): string {
-    return this.cats[id];
+  findOne(id: number): Promise<CatsEntity | null> {
+    return this.catsRepository.findOneBy({ id }); //return object or null
   }
-  create(data: { name: string }): number {
-    return this.cats.push(data.name);
+  create(createCatDto: CreateCatsDto) {
+    return this.catsRepository.save(createCatDto); //return object
   }
-  update(id: number, data: { name: string }): string {
-    this.cats[id] = data.name;
-    return this.cats[id];
+  update(id: string, updateCatDto: UpdateCatsDto): Promise<UpdateResult> {
+    return this.catsRepository.update(+id, updateCatDto); //return UpdateResult
   }
-  delete(id: number): string[] {
-    this.cats.splice(id, 1);
-    return this.cats;
+  delete(id: number): Promise<DeleteResult> {
+    return this.catsRepository.delete(id); //return DeleteResult
   }
 }
