@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UserEntity } from 'src/users/entities/user.entity';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('profiles')
 export class ProfileEntity {
@@ -17,4 +18,7 @@ export class ProfileEntity {
   phone: string;
   @Column()
   profilePicture: string;
+
+  @OneToOne(() => UserEntity, (user) => user.profile) //specify inverse side as a second parameter
+  user: UserEntity;
 }

@@ -17,7 +17,11 @@ export class ProfilesService {
   }
 
   findAll() {
-    return this.profileRepository.find();
+    return this.profileRepository.find({
+      relations: {
+        user: true,
+      },
+    });
   }
 
   findOne(id: number) {
