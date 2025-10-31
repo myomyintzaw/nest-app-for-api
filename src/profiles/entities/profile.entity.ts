@@ -1,5 +1,11 @@
 import { UserEntity } from 'src/users/entities/user.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('profiles')
 export class ProfileEntity {
@@ -20,5 +26,10 @@ export class ProfileEntity {
   profilePicture: string;
 
   @OneToOne(() => UserEntity, (user) => user.profile) //specify inverse side as a second parameter
+  @JoinColumn({ name: 'user_id' })
+  //   @OneToOne(() => UserEntity, (user) => user.profile, {
+  //   cascade: true,
+  //   onDelete: 'CASCADE',
+  // })
   user: UserEntity;
 }

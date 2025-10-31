@@ -25,7 +25,10 @@ export class ProfilesService {
   }
 
   findOne(id: number) {
-    return this.profileRepository.findOne({ where: { id } });
+    return this.profileRepository.findOne({
+      where: { id },
+      relations: { user: true },
+    });
   }
 
   update(id: number, updateProfileDto: UpdateProfileDto) {

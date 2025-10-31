@@ -4,12 +4,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { ProfileEntity } from 'src/profiles/entities/profile.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepositary: Repository<UserEntity>,
+    @InjectRepository(ProfileEntity)
+    private readonly profileRepository: Repository<ProfileEntity>,
   ) {}
 
   create(createUserDto: CreateUserDto) {
@@ -25,14 +28,30 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return this.userRepositary.findOne({ where: { id } });
+    return this.userRepositary.findOne({
+      where: { id },
+      relations: { profile: true },
+    });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return this.userRepositary.update(id, updateUserDto);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    //delete profile first
+    const user = await this.userRepositary.findOne({
+      where: { id },
+      relations: { profile: true },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+    if (user.profile) {
+      await this.profileRepository.delete(user.profile.id);
+    }
+    //then delete user
     return this.userRepositary.delete(id);
   }
 }
