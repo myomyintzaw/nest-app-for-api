@@ -25,7 +25,9 @@ export class ProfileEntity {
   @Column()
   profilePicture: string;
 
-  @OneToOne(() => UserEntity, (user) => user.profile) //specify inverse side as a second parameter
+  @OneToOne(() => UserEntity, (user) => user.profile, {
+    onDelete: 'CASCADE',
+  }) //specify inverse side as a second parameter
   @JoinColumn({ name: 'user_id' })
   //   @OneToOne(() => UserEntity, (user) => user.profile, {
   //   cascade: true,
